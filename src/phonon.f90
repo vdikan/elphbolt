@@ -414,8 +414,7 @@ contains
   end subroutine read_ifc2_qe
 
   subroutine read_ifc2_siesta(self, crys)
-    !! Read the 2nd order force constants from the Quantum Espresso format.
-    !! This is adapted from ShengBTE.
+    !! Read the 2nd order force constants from the siesta format.
     
     class(phonon), intent(inout) :: self
     type(crystal), intent(in) :: crys
