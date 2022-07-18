@@ -65,7 +65,7 @@ module phonon_module
 
      procedure, public :: initialize, deallocate_phonon_quantities
      procedure, private :: calculate_phonons, read_ifc2, read_ifc3, &
-          phonon_espresso
+          phonon_espresso, read_ifc2_qe, read_ifc2_siesta
      
   end type phonon
 
@@ -272,8 +272,31 @@ contains
        call fill_triangles(self%triang, self%ens, self%triang_evals)
     end if
   end subroutine calculate_phonons
-  
+
   subroutine read_ifc2(self, crys)
+    !! Calls the appropriate 2nd order force constants parser.
+    
+    class(phonon), intent(inout) :: self
+    type(crystal), intent(in) :: crys
+
+    !Local variables
+    logical :: espresso_file_exists, siesta_file_exists
+    
+    inquire(file = 'espresso.ifc2', exist = espresso_file_exists)
+    inquire(file = 'siesta.ifc2', exist = siesta_file_exists)
+
+    if(espresso_file_exists .and. siesta_file_exists) &
+         call print_message(&
+         'Both espresso and siesta format FC2 files provided. Defaulting to espresso format.')
+
+    if(espresso_file_exists) then
+       call read_ifc2_qe(self, crys)
+    else
+       call read_ifc2_siesta(self, crys)
+    end if
+  end subroutine read_ifc2
+  
+  subroutine read_ifc2_qe(self, crys)
     !! Read the 2nd order force constants from the Quantum Espresso format.
     !! This is adapted from ShengBTE.
     
@@ -388,7 +411,18 @@ contains
        end do
     end do
     
-  end subroutine read_ifc2
+  end subroutine read_ifc2_qe
+
+  subroutine read_ifc2_siesta(self, crys)
+    !! Read the 2nd order force constants from the Quantum Espresso format.
+    !! This is adapted from ShengBTE.
+    
+    class(phonon), intent(inout) :: self
+    type(crystal), intent(in) :: crys
+
+    !TODO
+    ! Siesta format FC2 parsing happens here.
+  end subroutine read_ifc2_siesta
   
   subroutine read_ifc3(self, crys)
     !! Read the 3rd order force constants in the thirdorder.py format.
