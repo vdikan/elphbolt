@@ -57,7 +57,7 @@ module phonon_module
      !! Tetrahedra vertices filled with squared eigenvalues.
      !! This is needed only for the phonon Green's function calculation.
 
-     !Data read from ifc2 file. These will be used in the phonon calculation.
+     !Relevant data related to the use of the ifc2 tensor. These will be used in the phonon calculation.
      real(dp) :: rws(124, 0:3), cell_r(1:3, 0:3), cell_g(1:3, 0:3)
      real(dp), allocatable :: mm(:,:), rr(:,:,:)
       
